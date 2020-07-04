@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "rcnhots-tvOS.app"
-               BlueprintName = "rcnhots-tvOS"
-               ReferencedContainer = "container:rcnhots.xcodeproj">
+               BuildableName = "HOTSHeroiseTalentos-tvOS.app"
+               BlueprintName = "HOTSHeroiseTalentos-tvOS"
+               ReferencedContainer = "container:HOTSHeroiseTalentos.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "rcnhots-tvOSTests.xctest"
-               BlueprintName = "rcnhots-tvOSTests"
-               ReferencedContainer = "container:rcnhots.xcodeproj">
+               BuildableName = "HOTSHeroiseTalentos-tvOSTests.xctest"
+               BlueprintName = "HOTSHeroiseTalentos-tvOSTests"
+               ReferencedContainer = "container:HOTSHeroiseTalentos.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "rcnhots-tvOS.app"
-            BlueprintName = "rcnhots-tvOS"
-            ReferencedContainer = "container:rcnhots.xcodeproj">
+            BuildableName = "HOTSHeroiseTalentos-tvOS.app"
+            BlueprintName = "HOTSHeroiseTalentos-tvOS"
+            ReferencedContainer = "container:HOTSHeroiseTalentos.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "rcnhots-tvOS.app"
-            BlueprintName = "rcnhots-tvOS"
-            ReferencedContainer = "container:rcnhots.xcodeproj">
+            BuildableName = "HOTSHeroiseTalentos-tvOS.app"
+            BlueprintName = "HOTSHeroiseTalentos-tvOS"
+            ReferencedContainer = "container:HOTSHeroiseTalentos.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

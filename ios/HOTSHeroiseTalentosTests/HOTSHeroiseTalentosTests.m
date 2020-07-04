@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface rcnhotsTests : XCTestCase
+@interface HOTSHeroiseTalentosTests : XCTestCase
 
 @end
 
-@implementation rcnhotsTests
+@implementation HOTSHeroiseTalentosTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

@@ -44,8 +44,8 @@ def flipper_post_install(installer)
   end
 end
 
-target 'rcnhots' do
-  # Pods for rcnhots
+target 'HOTSHeroiseTalentos' do
+  # Pods for HOTSHeroiseTalentos
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -77,7 +77,7 @@ target 'rcnhots' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'rcnhotsTests' do
+  target 'HOTSHeroiseTalentosTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -94,10 +94,10 @@ target 'rcnhots' do
   end
 end
 
-target 'rcnhots-tvOS' do
-  # Pods for rcnhots-tvOS
+target 'HOTSHeroiseTalentos-tvOS' do
+  # Pods for HOTSHeroiseTalentos-tvOS
 
-  target 'rcnhots-tvOSTests' do
+  target 'HOTSHeroiseTalentos-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
