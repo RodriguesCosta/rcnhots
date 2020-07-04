@@ -7,6 +7,7 @@ const windowWidth = Dimensions.get('window').width;
 
 export const Container = styled.ScrollView`
   flex: 1;
+  background: #1b1146;
 `;
 
 export const ContainerShot = styled(ViewShot)``;
@@ -164,15 +165,36 @@ export const HeroTypeDescription = styled.Text<HeroTypeProps>`
 `;
 
 export const ShareButton = styled(RectButton)`
-  width: 100%;
+  flex: 1;
   height: 44px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 0px 10px 20px 10px;
   background: #12092c;
 `;
 
 export const ShareButtonText = styled.Text`
   color: #fff;
   font-size: 18px;
+`;
+
+export const TabButtonContainer = styled(RectButton)`
+  flex-direction: row;
+`;
+
+interface TabButtonProps extends TextProps {
+  selectedTab?: boolean;
+}
+
+export const TabButton = styled(RectButton)<TabButtonProps>`
+  flex: 1;
+  height: 44px;
+  justify-content: center;
+  align-items: center;
+
+  ${(props) =>
+    props.selectedTab &&
+    css`
+      background: #12092c;
+    `}
 `;

@@ -23,6 +23,19 @@ export interface HeroData {
   skin?: Skin;
 }
 
+type TalentsPossibilityOptions = 'no' | 'yes' | 'situational';
+
+export interface HeroTalent {
+  level: number;
+  image: string;
+  talents: TalentsPossibilityOptions[];
+}
+
+export interface HeroTalentBuild {
+  buildName: string;
+  talents: HeroTalent[];
+}
+
 export interface Ability {
   name?: string;
   description?: string;

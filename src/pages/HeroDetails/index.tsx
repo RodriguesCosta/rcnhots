@@ -9,9 +9,10 @@ import RNFS from 'react-native-fs';
 import {useLoading} from '../../Hooks/loading';
 import api from '../../services/api';
 
-import {HeroData, Stats} from '../../@types/heroes';
+import {HeroData, Stats, HeroTalentBuild} from '../../@types/heroes';
 import HeroStats from '../../components/HeroStats';
 import HeroAbiliity from '../../components/HeroAbiliity';
+import HeroTalent from '../../components/HeroTalent';
 
 import Tank from '../../assets/tank.png';
 import Bruiser from '../../assets/bruiser.png';
@@ -38,6 +39,8 @@ import {
   HeroTypeDescription,
   ShareButton,
   ShareButtonText,
+  TabButtonContainer,
+  TabButton,
 } from './styles';
 
 type HeroDetailsProps = {
@@ -46,6 +49,8 @@ type HeroDetailsProps = {
   };
 };
 
+type TabsOptions = 'abiliity' | 'talents';
+
 const HeroDetails: React.FC = () => {
   const {loading, setLoading} = useLoading();
   const shotViewRef = useRef(null);
@@ -53,14 +58,20 @@ const HeroDetails: React.FC = () => {
   const {hero} = params;
 
   const [heroToShow, setHeroToShow] = useState<HeroData>({} as HeroData);
+  const [heroBuild, setHeroBuild] = useState<HeroTalentBuild[]>([]);
+  const [currentTab, setCurrentTab] = useState<TabsOptions>('abiliity');
 
   useEffect(() => {
     async function loadDataApi() {
       setLoading(true);
 
       try {
-        const {data} = await api.get(`/heroes/${hero.slug}`);
-        setHeroToShow(data);
+        const [resHero, resTalent] = await Promise.all([
+          api.get(`/heroes/${hero.slug}`),
+          api.get(`/hero-build/${hero.slug}`),
+        ]);
+        setHeroToShow(resHero.data);
+        setHeroBuild(resTalent.data.build);
       } catch {}
 
       setLoading(false);
@@ -70,7 +81,7 @@ const HeroDetails: React.FC = () => {
   }, [setLoading, hero]);
 
   const getImageType = useCallback(() => {
-    switch (heroToShow.expandedRole?.slug) {
+    switch (hero.expandedRole?.slug) {
       case 'tank':
         return Tank;
       case 'bruiser':
@@ -84,7 +95,7 @@ const HeroDetails: React.FC = () => {
       case 'melee-assassin':
         return MeleeAssassin;
     }
-  }, [heroToShow]);
+  }, [hero]);
 
   const handleShare = useCallback(async () => {
     try {
@@ -94,7 +105,7 @@ const HeroDetails: React.FC = () => {
         result: 'tmpfile',
       });
 
-      const fileName = `/rcn-hots-${heroToShow.slug}.jpg`;
+      const fileName = `/rcn-hots-${hero.slug}.jpg`;
       let filePath = `${RNFS.DocumentDirectoryPath}${fileName}`;
       if (Platform.OS === 'android') {
         await PermissionsAndroid.request(
@@ -115,47 +126,71 @@ const HeroDetails: React.FC = () => {
         url: `file://${filePath}`,
       });
     } catch {}
-  }, [heroToShow]);
+  }, [hero]);
 
   if (loading) {
     return <LinearGradient style={{flex: 1}} colors={['#1b1146', '#0e0520']} />;
   }
 
   return (
-    <LinearGradient style={{flex: 1}} colors={['#1b1146', '#0e0520']}>
-      <Container>
-        <ContainerShot ref={shotViewRef}>
-          <LinearGradient style={{flex: 1}} colors={['#1b1146', '#0e0520']}>
-            <CardContainer>
-              <CardImage
-                source={{
-                  uri: heroToShow.cardPortrait,
-                }}
-              />
-            </CardContainer>
-            <ContainerContent>
-              <HeroName>{heroToShow.name}</HeroName>
-              <HeroSubName>{heroToShow.title}</HeroSubName>
-              <HeroDescription>{heroToShow.shortDescription}</HeroDescription>
+    <Container>
+      <ContainerShot ref={shotViewRef}>
+        <CardContainer>
+          <CardImage
+            source={{
+              uri: heroToShow.cardPortrait,
+            }}
+          />
+        </CardContainer>
+        <ContainerContent>
+          <HeroName>{heroToShow.name}</HeroName>
+          <HeroSubName>{heroToShow.title}</HeroSubName>
+          <HeroDescription>{heroToShow.shortDescription}</HeroDescription>
 
-              <HeroHistory>História</HeroHistory>
-              <HeroDescription>{heroToShow.description}</HeroDescription>
+          <HeroHistory>História</HeroHistory>
+          <HeroDescription>{heroToShow.description}</HeroDescription>
 
-              <HeroTypeContainer>
-                <HeroTypeImage source={getImageType()} />
-                <HeroTypeView>
-                  <HeroTypeName heroType={heroToShow.expandedRole?.slug}>
-                    {heroToShow.expandedRole?.name}
-                  </HeroTypeName>
-                  <HeroTypeDescription heroType={heroToShow.expandedRole?.slug}>
-                    {heroToShow.expandedRole?.description}
-                  </HeroTypeDescription>
-                </HeroTypeView>
-              </HeroTypeContainer>
+          <HeroTypeContainer>
+            <HeroTypeImage source={getImageType()} />
+            <HeroTypeView>
+              <HeroTypeName heroType={heroToShow.expandedRole?.slug}>
+                {heroToShow.expandedRole?.name}
+              </HeroTypeName>
+              <HeroTypeDescription heroType={heroToShow.expandedRole?.slug}>
+                {heroToShow.expandedRole?.description}
+              </HeroTypeDescription>
+            </HeroTypeView>
+          </HeroTypeContainer>
 
-              <HeroStats stats={heroToShow.stats as Stats} />
+          <HeroStats stats={heroToShow.stats as Stats} />
 
+          <TabButtonContainer>
+            <TabButton
+              selectedTab={currentTab === 'abiliity'}
+              onPress={() => {
+                setCurrentTab('abiliity');
+              }}>
               <HeroTitles>HABILIDADES</HeroTitles>
+            </TabButton>
+            <TabButton
+              selectedTab={currentTab === 'talents'}
+              onPress={() => {
+                setCurrentTab('talents');
+              }}>
+              <HeroTitles>TALENTOS</HeroTitles>
+            </TabButton>
+          </TabButtonContainer>
+
+          {currentTab === 'talents' && (
+            <>
+              {heroBuild.map((talent) => (
+                <HeroTalent key={talent.buildName} talentBuild={talent} />
+              ))}
+            </>
+          )}
+
+          {currentTab === 'abiliity' && (
+            <>
               {heroToShow.abilities?.map((ability) => (
                 <HeroAbiliity key={ability.slug} ability={ability} />
               ))}
@@ -179,15 +214,15 @@ const HeroDetails: React.FC = () => {
                   ))}
                 </>
               )}
-            </ContainerContent>
-          </LinearGradient>
-        </ContainerShot>
+            </>
+          )}
+        </ContainerContent>
+      </ContainerShot>
 
-        <ShareButton onPress={handleShare}>
-          <ShareButtonText>COMPARTILHAR</ShareButtonText>
-        </ShareButton>
-      </Container>
-    </LinearGradient>
+      <ShareButton onPress={handleShare}>
+        <ShareButtonText>COMPARTILHAR</ShareButtonText>
+      </ShareButton>
+    </Container>
   );
 };
 
