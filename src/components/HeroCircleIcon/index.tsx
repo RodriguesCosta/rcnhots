@@ -1,6 +1,7 @@
 import React, {memo} from 'react';
 
-import {HeroData} from '../../static/heros';
+import {HeroData} from '../../@types/heroes';
+import HotsFreeToPlay from '../../assets/hots-freetoplay.png';
 
 import {
   Container,
@@ -8,6 +9,8 @@ import {
   HeroImageContainerGradient,
   HeroImage,
   HeroName,
+  HeroIsNew,
+  FreeToPlayImage,
 } from './styles';
 
 interface HeroCircleIconProps {
@@ -28,6 +31,8 @@ const HeroCircleIcon: React.FC<HeroCircleIconProps> = ({heroData, onPress}) => {
         </HeroImageContainerGradient>
       </HeroImageContainer>
       <HeroName>{heroData.name}</HeroName>
+      {heroData.isNew && <HeroIsNew>NOVO</HeroIsNew>}
+      {heroData.isInRotation && <FreeToPlayImage source={HotsFreeToPlay} />}
     </Container>
   );
 };

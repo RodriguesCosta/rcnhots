@@ -3,8 +3,11 @@ import {FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
+import {useLoading} from '../../Hooks/loading';
+import api from '../../services/api';
+
 import HeroCircleIcon from '../../components/HeroCircleIcon';
-import heros from '../../static/heros';
+import {HeroData} from '../../@types/heroes';
 
 import all from '../../assets/all.svg';
 import tank from '../../assets/tank.svg';
@@ -29,8 +32,27 @@ import {
 } from './styles';
 
 const Home: React.FC = () => {
+  const {setLoading} = useLoading();
+
   const navigation = useNavigation();
-  const [listHeros, setListHeros] = useState(heros);
+
+  const [listHeros, setListHeros] = useState<HeroData[]>([]);
+  const [listHerosShow, setListHerosShow] = useState<HeroData[]>([]);
+
+  useEffect(() => {
+    async function loadDataApi() {
+      setLoading(true);
+
+      try {
+        const {data} = await api.get('/heroes-simple-list');
+        setListHeros(data.heroes);
+      } catch {}
+
+      setLoading(false);
+    }
+
+    loadDataApi();
+  }, [setLoading]);
 
   const [roles] = useState([
     'all:Todos',
@@ -45,21 +67,21 @@ const Home: React.FC = () => {
   const [universes] = useState([
     'all:Todos',
     'warcraft:Warcraft',
-    'starcraft:Starcraft',
+    'starcraft:StarCraft',
     'diablo:Diablo',
     'overwatch:Overwatch',
     'retro:Retro',
   ]);
 
   const [currentRoles, setCurrentRoles] = useState('all');
-  const [currentUniverses, setCurrentUniverses] = useState('all');
+  const [currentUniverses, setCurrentUniverses] = useState('Todos');
 
   useEffect(() => {
-    setListHeros(() => {
-      const filterRoles = [];
-      const notFilterRoles = [];
+    setListHerosShow(() => {
+      const filterRoles: HeroData[] = [];
+      const notFilterRoles: HeroData[] = [];
 
-      for (const currentHero of heros) {
+      for (const currentHero of listHeros) {
         if (currentHero.expandedRole?.slug === currentRoles) {
           filterRoles.push(currentHero);
         } else {
@@ -83,7 +105,7 @@ const Home: React.FC = () => {
       const finalUniverses = [...filterUniverses, ...notFilterUniverses];
       return finalUniverses;
     });
-  }, [currentRoles, currentUniverses]);
+  }, [listHeros, currentRoles, currentUniverses]);
 
   const getRoleType = useCallback((role: string) => {
     switch (role) {
@@ -152,7 +174,7 @@ const Home: React.FC = () => {
                 <FilterIcon
                   fill={
                     universe.split(':')[1] === currentUniverses
-                      ? '#FFF'
+                      ? '#FFFFFF'
                       : '#9c9c9c'
                   }
                   xml={getUniverseType(universe.split(':')[0])}
@@ -162,12 +184,13 @@ const Home: React.FC = () => {
           </ContainerFilter>
 
           <FlatList
-            data={listHeros}
+            data={listHerosShow}
             keyExtractor={({slug}) => `${slug}`}
             renderItem={({item}) => (
               <HeroCircleIcon
                 heroData={item}
                 onPress={() => {
+                  setLoading(true);
                   navigation.navigate('HeroDetails', {hero: item});
                 }}
               />

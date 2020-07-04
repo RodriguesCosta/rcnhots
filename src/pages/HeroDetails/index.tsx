@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
 import Share from 'react-native-share';
 import {useRoute, RouteProp} from '@react-navigation/native';
@@ -6,7 +6,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import {captureRef} from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
 
-import {HeroData, Stats} from '../../static/heros';
+import {useLoading} from '../../Hooks/loading';
+import api from '../../services/api';
+
+import {HeroData, Stats} from '../../@types/heroes';
 import HeroStats from '../../components/HeroStats';
 import HeroAbiliity from '../../components/HeroAbiliity';
 
@@ -44,12 +47,30 @@ type HeroDetailsProps = {
 };
 
 const HeroDetails: React.FC = () => {
+  const {loading, setLoading} = useLoading();
   const shotViewRef = useRef(null);
   const {params} = useRoute<RouteProp<HeroDetailsProps, 'params'>>();
   const {hero} = params;
 
+  const [heroToShow, setHeroToShow] = useState<HeroData>({} as HeroData);
+
+  useEffect(() => {
+    async function loadDataApi() {
+      setLoading(true);
+
+      try {
+        const {data} = await api.get(`/heroes/${hero.slug}`);
+        setHeroToShow(data);
+      } catch {}
+
+      setLoading(false);
+    }
+
+    loadDataApi();
+  }, [setLoading, hero]);
+
   const getImageType = useCallback(() => {
-    switch (hero.expandedRole?.slug) {
+    switch (heroToShow.expandedRole?.slug) {
       case 'tank':
         return Tank;
       case 'bruiser':
@@ -63,7 +84,7 @@ const HeroDetails: React.FC = () => {
       case 'melee-assassin':
         return MeleeAssassin;
     }
-  }, [hero]);
+  }, [heroToShow]);
 
   const handleShare = useCallback(async () => {
     try {
@@ -73,7 +94,7 @@ const HeroDetails: React.FC = () => {
         result: 'tmpfile',
       });
 
-      const fileName = `/rcn-hots-${hero.slug}.jpg`;
+      const fileName = `/rcn-hots-${heroToShow.slug}.jpg`;
       let filePath = `${RNFS.DocumentDirectoryPath}${fileName}`;
       if (Platform.OS === 'android') {
         await PermissionsAndroid.request(
@@ -93,10 +114,12 @@ const HeroDetails: React.FC = () => {
       await Share.open({
         url: `file://${filePath}`,
       });
-    } catch {
-      console.log('error on share');
-    }
-  }, [hero]);
+    } catch {}
+  }, [heroToShow]);
+
+  if (loading) {
+    return <LinearGradient style={{flex: 1}} colors={['#1b1146', '#0e0520']} />;
+  }
 
   return (
     <LinearGradient style={{flex: 1}} colors={['#1b1146', '#0e0520']}>
@@ -106,49 +129,49 @@ const HeroDetails: React.FC = () => {
             <CardContainer>
               <CardImage
                 source={{
-                  uri: hero.cardPortrait,
+                  uri: heroToShow.cardPortrait,
                 }}
               />
             </CardContainer>
             <ContainerContent>
-              <HeroName>{hero.name}</HeroName>
-              <HeroSubName>{hero.title}</HeroSubName>
-              <HeroDescription>{hero.shortDescription}</HeroDescription>
+              <HeroName>{heroToShow.name}</HeroName>
+              <HeroSubName>{heroToShow.title}</HeroSubName>
+              <HeroDescription>{heroToShow.shortDescription}</HeroDescription>
 
               <HeroHistory>História</HeroHistory>
-              <HeroDescription>{hero.description}</HeroDescription>
+              <HeroDescription>{heroToShow.description}</HeroDescription>
 
               <HeroTypeContainer>
                 <HeroTypeImage source={getImageType()} />
                 <HeroTypeView>
-                  <HeroTypeName heroType={hero.expandedRole?.slug}>
-                    {hero.expandedRole?.name}
+                  <HeroTypeName heroType={heroToShow.expandedRole?.slug}>
+                    {heroToShow.expandedRole?.name}
                   </HeroTypeName>
-                  <HeroTypeDescription heroType={hero.expandedRole?.slug}>
-                    {hero.expandedRole?.description}
+                  <HeroTypeDescription heroType={heroToShow.expandedRole?.slug}>
+                    {heroToShow.expandedRole?.description}
                   </HeroTypeDescription>
                 </HeroTypeView>
               </HeroTypeContainer>
 
-              <HeroStats stats={hero.stats as Stats} />
+              <HeroStats stats={heroToShow.stats as Stats} />
 
               <HeroTitles>HABILIDADES</HeroTitles>
-              {hero.abilities?.map((ability) => (
+              {heroToShow.abilities?.map((ability) => (
                 <HeroAbiliity key={ability.slug} ability={ability} />
               ))}
 
               <HeroTitles>HEROICAS</HeroTitles>
-              {hero.heroicAbilities?.map((ability) => (
+              {heroToShow.heroicAbilities?.map((ability) => (
                 <HeroAbiliity key={ability.slug} ability={ability} />
               ))}
 
               <HeroTitles>ESPECIALIZAÇÃO</HeroTitles>
-              <HeroAbiliity ability={hero.trait} />
+              <HeroAbiliity ability={heroToShow.trait} />
 
-              {hero.otherAbilities?.length && (
+              {heroToShow.otherAbilities?.length && (
                 <>
                   <HeroTitles>OUTRAS HABILIDADES</HeroTitles>
-                  {hero.otherAbilities?.map((ability, index) => (
+                  {heroToShow.otherAbilities?.map((ability, index) => (
                     <HeroAbiliity
                       key={`${index}${ability.slug}`}
                       ability={ability}

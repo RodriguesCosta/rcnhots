@@ -10,6 +10,7 @@ export const Container = styled(RectButton)`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+  position: relative;
 `;
 
 export const HeroImageContainer = styled.View`
@@ -37,4 +38,23 @@ export const HeroName = styled.Text`
   color: #fff;
   font-weight: bold;
   text-align: center;
+`;
+
+export const HeroIsNew = styled.Text`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px;
+  border-radius: 4px;
+  background: red;
+  font-size: 7px;
+`;
+
+export const FreeToPlayImage = styled.Image`
+  position: absolute;
+  bottom: 5px;
+  right: -2px;
 `;

@@ -168,7 +168,8 @@ export const ShareButton = styled(RectButton)`
   height: 44px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  background: #12092c;
 `;
 
 export const ShareButtonText = styled.Text`

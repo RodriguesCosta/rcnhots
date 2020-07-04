@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Stats} from '../../static/heros';
+import {Stats} from '../../@types/heroes';
 
 import Damage from '../../assets/damage.png';
 import Utility from '../../assets/utility.png';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Ability, Trait} from '../../static/heros';
+import {Ability, Trait} from '../../@types/heroes';
 import hexagon from '../../assets/hexagon.svg';
 import AbilityFrame from '../../assets/ability-frame.png';
 
