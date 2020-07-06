@@ -66,9 +66,15 @@ const HeroDetails: React.FC = () => {
       setLoading(true);
 
       try {
+        let heroBuildSlug = hero.slug;
+
+        if (heroBuildSlug === 'etc') {
+          heroBuildSlug = 'e-t-c';
+        }
+
         const [resHero, resTalent] = await Promise.all([
           api.get(`/heroes/${hero.slug}`),
-          api.get(`/hero-build/${hero.slug}`),
+          api.get(`/hero-build/${heroBuildSlug}`),
         ]);
         setHeroToShow(resHero.data);
         setHeroBuild(resTalent.data.build);
